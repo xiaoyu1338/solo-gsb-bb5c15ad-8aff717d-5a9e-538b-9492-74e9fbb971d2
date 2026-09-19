@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    image: board-fold-unfold:latest
+    container_name: board-fold-unfold
+    ports:
+      - "8000:8000"
+    environment:
+      # 展开后孔位总数上限（镜像传播路径数），超过返回 422
+      MAX_RESULT_HOLES: "200000"
+      # 板材单边最大格数
+      MAX_BOARD_SIDE: "1000000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
